@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tables">
     <h2>Общий анализ крови</h2>
     <input type="date" v-model="blood_date" />
     <select v-model="mode">
@@ -7,7 +7,7 @@
       <option value="muscle">М</option>
       <option value="femini">Ж</option>
     </select>
-    <table class="table table-bordered">
+    <table class="table">
       <thead>
         <tr>
           <th>Название</th>
@@ -408,6 +408,24 @@ export default {
 </script>
 
 <style scoped>
+* {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.tables {
+  width: 700px;
+}
+
+.table {
+  border: 2px solid #666666;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  border-bottom: 1px solid #ddd;
+}
+
 .forms {
   display: flex;
   align-items: start;

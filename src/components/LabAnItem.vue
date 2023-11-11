@@ -70,4 +70,14 @@ export default {
 input {
     max-width: 100px;
 }
+
+.table-success{
+    background: #5cad55;
+}
+.table-warning{
+    background: #d4d033;
+}
+.table-danger{
+    background: #ec492f;
+}
 </style>
