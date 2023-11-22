@@ -1,12 +1,21 @@
 <template>
+  <nav>
+    <div class="nav-item" v-for="(item, index) in navs" :key="index">
+      <input type="radio" :id="index" :value="index" v-model="selected">
+      <label :for="index">{{ index == 0 ? 'Все' : AnalysList[index - 1].small_title }}</label>
+    </div>
+  </nav>
   <div class="tables">
 
-    <AnalysList v-for="(analys, index) in AnalysList" :analysTitle="analys.title" :srcArray="analys.srcList"
-      v-model="Results[index]" />
+    <AnalysList v-for="(   analys, index   ) in    AnalysList   " :analysTitle="analys.title" :srcArray="analys.srcList"
+      v-model="Results[index]" v-show="selected == 0 || selected == index + 1" />
+  </div>
 
-    <div class="forms">
-      <div class="controls">
-        <button type="button" class="btn btn-outline-dark" @click="CopyFinalText">Скопировать текст</button>
+  <div class="forms">
+    <div class="controls">
+      <button type="button" class="btn-copy" @click="CopyFinalText">Скопировать текст</button>
+      <div class="additional-controls">
+        <label>Расположение </label>
         <select class="custom-select custom-select-lg mb-3" v-model="finalTextMode">
           <option selected value="full_col">В столбик</option>
           <option value="full_line">В строку</option>
@@ -22,26 +31,26 @@
           </div>
         </div>
       </div>
-      <pre class="final">{{ finalText }}</pre>
     </div>
+    <pre class="final">{{ finalText }}</pre>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
 import AnalysList from './components/AnalysList.vue';
 
 export default {
   components: { AnalysList },
   data() {
     return {
+      selected: 0,
       finalTextMode: 'full_col',
       mode: 'muscle',
       use_units: false,
       use_reference: false,
       AnalysList: [
         {
-          title: 'Общий анализ крови', srcList: [
+          title: 'Общий анализ крови', small_title: 'ОАК', srcList: [
             { itemType: 'WBC', title: "Лейкоциты", smallTitle: "", units: "10^9/л", references: { FemMin: 4, FemMax: 9, MusMin: 4, MusMax: 9 } },
             { itemType: 'HGB', title: "Гемоглобин", smallTitle: "", units: "гр/л", references: { FemMin: 120, FemMax: 140, MusMin: 130, MusMax: 160 } },
             { itemType: 'RBC', title: "Эритроциты", smallTitle: "", units: "10^12/л", references: { FemMin: 3.9, FemMax: 4.7, MusMin: 4.0, MusMax: 5.0 } },
@@ -65,7 +74,7 @@ export default {
           ]
         },
         {
-          title: 'Общий анализ мочи', srcList: [
+          title: 'Общий анализ мочи', small_title: 'ОАМ', srcList: [
             { itemType: 'LEU', title: "Лейкоциты", smallTitle: "", units: "кл.в п/з", references: { FemMin: 0, FemMax: 6, MusMin: 0, MusMax: 3 } },
             { itemType: 'KET', title: "Кетоны", smallTitle: "", units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
             { itemType: 'URO', title: "Уробилиноген", smallTitle: "", units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
@@ -79,7 +88,7 @@ export default {
           ]
         },
         {
-          title: 'Биохимический анализ крови', srcList: [
+          title: 'Биохимический анализ крови', small_title: 'БхАК', srcList: [
             { itemType: 'CBIL', title: "Общ. билирубин", smallTitle: "", units: "мкмоль/л", references: { FemMin: 8.5, FemMax: 20.5, MusMin: 8.5, MusMax: 20.5 } },
             { itemType: 'RELBIL', title: "Связанный билирубин", smallTitle: "", units: "мкмоль/л", references: { FemMin: 2.2, FemMax: 5.1, MusMin: 2.2, MusMax: 5.1 } },
             { itemType: 'NRELBIL', title: "Несвязанный билирубин", smallTitle: "", units: "мкмоль/л", references: { FemMin: 0, FemMax: 17.1, MusMin: 0, MusMax: 17.1 } },
@@ -112,6 +121,7 @@ export default {
         }
       ],
       Results: [],
+      navs: [0]
     }
   },
   methods: {
@@ -163,9 +173,9 @@ export default {
       else if (this.mode === 'femini') {
         return `(${item.references.FemMin}-${item.references.FemMax})`;
       }
-    }
+    },
   },
-  
+
   computed: {
     finalText() {
       return this.GenerateFinalText();
@@ -176,7 +186,7 @@ export default {
       const element = this.AnalysList[index];
       let _item = { title: element.title, results: [], date: '' };
       this.Results.push(_item);
-
+      this.navs.push(index + 1);
     }
   }
 }
@@ -187,14 +197,42 @@ export default {
   font-family: 'Ubuntu', sans-serif;
 }
 
-.tables {
-  width: 700px;
+nav {
+  position: fixed;
+  width: 90px;
+  background: #d5e2ec;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  box-shadow: 5px 0px 10px #666666;
+  padding-top: 25px;
 }
 
-.table {
-  border: 2px solid #666666;
-  border-collapse: collapse;
-  width: 100%;
+.nav-item {
+  margin-left: 16px;
+}
+
+.nav-item input[type=radio] {
+  display: none;
+}
+
+.nav-item label {
+  cursor: pointer;
+  line-height: 34px;
+  user-select: none;
+}
+
+.nav-item label:hover {
+  color: #666666;
+}
+
+.nav-item input[type=radio]:checked+label {
+  text-decoration: underline #427cae 3px;
+}
+
+.tables {
+  width: 700px;
+  margin-left: 100px;
 }
 
 th {
@@ -203,21 +241,65 @@ th {
 
 .forms {
   display: flex;
-  align-items: start;
-  justify-content: start;
   flex-direction: column;
-  width: 555px;
+  justify-content: start;
+  align-items: center;
+  width: 500px;
   position: fixed;
-  right: 0;
+  right: 10px;
   bottom: 0;
   top: 0;
+  box-shadow: -5px 0px 10px #666666;
 }
 
 .controls {
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.btn-copy {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 0 20px;
+  margin: 15px;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #000;
+  background-color: #abc0e6;
+  box-shadow: 0 2px #598bd1;
+  cursor: pointer;
+  user-select: none;
+  appearance: none;
+  touch-action: manipulation;
+}
+
+.btn-copy:hover {
+  transition: 0.25s;
+  background-color: #598bd1;
+}
+
+.btn-copy:active {
+  background-color: #2f599e !important;
+}
+
+.additional-controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
 }
 
 .final {
+  width: 90%;
   text-wrap: wrap;
+  min-height: 150px;
+  box-shadow: 2px 2px 6px inset #666;
 }
 </style>

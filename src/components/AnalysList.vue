@@ -1,12 +1,14 @@
 <template>
     <div>
         <h2>{{ analysTitle }}</h2>
-        <input type="date" v-model="date" />
-        <select v-model="mode">
-            <option disabled value="">Пол</option>
-            <option value="muscle">М</option>
-            <option value="femini">Ж</option>
-        </select>
+        <div class="list-controls">
+            <input type="date" v-model="date" />
+            <select v-model="mode">
+                <option disabled value="">Пол</option>
+                <option value="muscle">М</option>
+                <option value="femini">Ж</option>
+            </select>
+        </div>
         <table class="table">
             <thead>
                 <tr>
@@ -102,4 +104,44 @@ export default {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.list-controls {
+    margin-bottom: 15px;
+}
+
+.list-controls input[type="date"],
+.list-controls select
+{
+    font-size: 15px;
+}
+
+.list-controls select
+{
+    margin-left: 15px;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+
+.table th {
+    font-weight: bold;
+    padding: 5px;
+    background: #efefef;
+    border: 1px solid #dddddd;
+}
+
+
+
+.table tr td:first-child,
+.table tr th:first-child {
+    border-left: none;
+}
+
+.table tr td:last-child,
+.table tr th:last-child {
+    border-right: none;
+}
+</style>

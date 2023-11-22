@@ -2,10 +2,11 @@
     <tr :class="danger">
         <td>{{ labItem.title }}</td>
         <td>{{ labItem.itemType }}</td>
-        <td><input type="text" @blur="ChangeColor" v-model.number="val" placeholder="..."></td>
+        <td><input type="number" @blur="ChangeColor" v-model.number="val" placeholder="..." @change="ReplaceCharacters">
+        </td>
         <td>{{ labItem.units }}</td>
-        <td>{{ mode === 'femini' ? labItem.references.FemMin : labItem.references.MusMin }}</td>
-        <td>{{ mode === 'femini' ? labItem.references.FemMax : labItem.references.MusMax }}</td>
+        <td class="reference">{{ mode === 'femini' ? labItem.references.FemMin : labItem.references.MusMin }}</td>
+        <td class="reference">{{ mode === 'femini' ? labItem.references.FemMax : labItem.references.MusMax }}</td>
     </tr>
 </template>
 
@@ -55,6 +56,9 @@ export default {
                 }
                 this.$emit('OnValueChanged', this.labItem, this.val);
             }
+        },
+        ReplaceCharacters() {
+            this.val = this.val.toString().replace(',', '.');
         }
     },
     emits: ['OnValueChanged'],
@@ -71,13 +75,35 @@ input {
     max-width: 100px;
 }
 
-.table-success{
+.table td {
+    border: 1px solid #dddddd;
+    padding: 5px;
+}
+
+.table tr td:first-child,
+.table tr th:first-child {
+    border-left: none;
+}
+
+.table tr td:last-child,
+.table tr th:last-child {
+    border-right: none;
+}
+
+.table tr td.reference {
+    width: auto;
+    text-align: center;
+}
+
+.table-success {
     background: #5cad55;
 }
-.table-warning{
+
+.table-warning {
     background: #d4d033;
 }
-.table-danger{
+
+.table-danger {
     background: #ec492f;
 }
 </style>
