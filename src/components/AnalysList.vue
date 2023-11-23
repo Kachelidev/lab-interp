@@ -36,7 +36,11 @@ export default {
         return {
             date: new Date().toISOString().split('T')[0],
             mode: 'muscle',
-            ResultItem: Object
+            ResultItem: {
+                title: '',
+                results: [],
+                date: this.date
+            }
         }
     },
     props: {
@@ -110,13 +114,11 @@ export default {
 }
 
 .list-controls input[type="date"],
-.list-controls select
-{
+.list-controls select {
     font-size: 15px;
 }
 
-.list-controls select
-{
+.list-controls select {
     margin-left: 15px;
 }
 
