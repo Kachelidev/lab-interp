@@ -29,6 +29,10 @@
             <input type="checkbox" name="" id="includeRef" v-model="use_reference" />
             <label for="includeRef">С нормами</label>
           </div>
+          <div>
+            <input type="checkbox" name="" id="useAbbreviature" v-model="useAbbrev" />
+            <label for="useAbbreviature">Сокращенные названия</label>
+          </div>
         </div>
       </div>
     </div>
@@ -43,6 +47,7 @@ export default {
   components: { AnalysList },
   data() {
     return {
+      useAbbrev: true,
       selected: 0,
       finalTextMode: 'full_col',
       mode: 'muscle',
@@ -51,88 +56,108 @@ export default {
       AnalysList: [
         {
           title: 'Общий анализ крови', small_title: 'ОАК', srcList: [
-            { itemType: 'WBC', title: "Лейкоциты", units: "10^9/л", references: { FemMin: 4, FemMax: 9, MusMin: 4, MusMax: 9 } },
-            { itemType: 'HGB', title: "Гемоглобин", units: "гр/л", references: { FemMin: 120, FemMax: 140, MusMin: 130, MusMax: 160 } },
-            { itemType: 'RBC', title: "Эритроциты", units: "10^12/л", references: { FemMin: 3.9, FemMax: 4.7, MusMin: 4.0, MusMax: 5.0 } },
-            { itemType: 'HCT', title: "Гематокрит", units: "%", references: { FemMin: 0.85, FemMax: 1.15, MusMin: 0.85, MusMax: 1.15 } },
-            // { itemType: 'MCV', title: "Ср. объем эритроцита",  units: "фЛ", references: { FemMin: 78, FemMax: 94, MusMin: 78, MusMax: 94 } },
-            // { itemType: 'MCH', title: "Ср. сод. гемоглобина в эр.",  units: "пгр", references: { FemMin: 26, FemMax: 32, MusMin: 26, MusMax: 32 } },
-            // { itemType: 'MCHC', title: "Ср.конц-я гемоглобина в эр.",  units: "гр/л", references: { FemMin: 32.2, FemMax: 36.4, MusMin: 32.2, MusMax: 36.4 } },
-            // { itemType: 'RDW-CV', title: "Отклонение р-ра эритроцита",  units: "%", references: { FemMin: 11.6, FemMax: 14.8, MusMin: 11.6, MusMax: 14.8 } },
-            // { itemType: 'RDW-SD', title: "Разброс размеров  эр.",  units: "фЛ", references: { FemMin: 35.3, FemMax: 49.9, MusMin: 35.3, MusMax: 49.9 } },
-            { itemType: 'PLT', title: "Тромбоциты", units: "10^9/л", references: { FemMin: 180, FemMax: 320, MusMin: 180, MusMax: 320 } },
-            // { itemType: 'MPV', title: "Ср. объем тромбоцита",  units: "фЛ", references: { FemMin: 7.4, FemMax: 10.4, MusMin: 7.4, MusMax: 10.4 } },
-            // { itemType: 'PDW', title: "Ширина распр-я тромбоцитов",  units: "", references: { FemMin: 9.4, FemMax: 18.1, MusMin: 9.4, MusMax: 18.1 } },
-            // { itemType: 'PCT', title: "Тромбокрит",  units: "%", references: { FemMin: 0.15, FemMax: 0.4, MusMin: 0.15, MusMax: 0.4 } },
-            // { itemType: 'RTC', title: "Ретикулоциты",  units: "%", references: { FemMin: 0.2, FemMax: 1.2, MusMin: 0.2, MusMax: 1.2 } },
-            { itemType: 'EOS', title: "Эозинофилы", units: "%", references: { FemMin: 0, FemMax: 5, MusMin: 0, MusMax: 5 } },
-            { itemType: 'PN', title: "Палочкоядерные нейтр.", units: "%", references: { FemMin: 1, FemMax: 6, MusMin: 1, MusMax: 6 } },
-            { itemType: 'SN', title: "Сегментоядерные нейтр.", units: "%", references: { FemMin: 47, FemMax: 72, MusMin: 47, MusMax: 72 } },
-            { itemType: 'lymph%', title: "Лимфациты (отн)", units: "%", references: { FemMin: 18, FemMax: 40, MusMin: 18, MusMax: 40 } },
-            { itemType: 'MON', title: "Моноциты", units: "%", references: { FemMin: 2, FemMax: 9, MusMin: 2, MusMax: 9 } },
-            { itemType: 'ELSp', title: "СОЭ", units: "сек", references: { FemMin: 2, FemMax: 15.0, MusMin: 1, MusMax: 10 } },
+            { itemType: 'WBC', title: "Лейкоциты", abrreviature: 'WBC', units: "10^9/л", references: { FemMin: 4, FemMax: 9, MusMin: 4, MusMax: 9 } },
+            { itemType: 'RBC', title: "Эритроциты", abrreviature: 'RBC', units: "10^12/л", references: { FemMin: 3.9, FemMax: 4.7, MusMin: 4.0, MusMax: 5.0 } },
+            { itemType: 'HGB', title: "Гемоглобин", abrreviature: 'HGB', units: "гр/л", references: { FemMin: 120, FemMax: 140, MusMin: 130, MusMax: 160 } },
+            { itemType: 'HCT', title: "Гематокрит", abrreviature: 'HCT', units: "%", references: { FemMin: 0.85, FemMax: 1.15, MusMin: 0.85, MusMax: 1.15 } },
+            { itemType: 'PLT', title: "Тромбоциты", abrreviature: 'PLT', units: "10^9/л", references: { FemMin: 180, FemMax: 320, MusMin: 180, MusMax: 320 } },
+            { itemType: 'EOS', title: "Эозинофилы", abrreviature: 'Э', units: "%", references: { FemMin: 0, FemMax: 5, MusMin: 0, MusMax: 5 } },
+            { itemType: 'PN', title: "Палочкоядерные нейтр.", abrreviature: 'П', units: "%", references: { FemMin: 1, FemMax: 6, MusMin: 1, MusMax: 6 } },
+            { itemType: 'SN', title: "Сегментоядерные нейтр.", abrreviature: 'С', units: "%", references: { FemMin: 47, FemMax: 72, MusMin: 47, MusMax: 72 } },
+            { itemType: 'lymph%', title: "Лимфациты (отн)", abrreviature: 'ЛФ', units: "%", references: { FemMin: 18, FemMax: 40, MusMin: 18, MusMax: 40 } },
+            { itemType: 'MON', title: "Моноциты", units: "%", abrreviature: 'М', references: { FemMin: 2, FemMax: 9, MusMin: 2, MusMax: 9 } },
+            { itemType: 'ELSp', title: "СОЭ", abrreviature: 'СОЭ', units: "сек", references: { FemMin: 2, FemMax: 15.0, MusMin: 1, MusMax: 10 } },
+          ]
+        },
+        {
+          title: 'Общий анализ крови развернутый', small_title: 'ОАКр', srcList: [
+            { itemType: 'WBC', title: "Лейкоциты", abrreviature: 'WBC', units: "10^9/л", references: { FemMin: 4, FemMax: 9, MusMin: 4, MusMax: 9 } },
+            { itemType: 'RBC', title: "Эритроциты", abrreviature: 'RBC', units: "10^12/л", references: { FemMin: 3.9, FemMax: 4.7, MusMin: 4.0, MusMax: 5.0 } },
+            { itemType: 'HGB', title: "Гемоглобин", abrreviature: 'HGB', units: "гр/л", references: { FemMin: 120, FemMax: 140, MusMin: 130, MusMax: 160 } },
+            { itemType: 'HCT', title: "Гематокрит", abrreviature: 'HCT', units: "%", references: { FemMin: 0.85, FemMax: 1.15, MusMin: 0.85, MusMax: 1.15 } },
+            { itemType: 'MCV', title: "Ср. объем эритроцита", abrreviature: 'MCV', units: "фЛ", references: { FemMin: 78, FemMax: 94, MusMin: 78, MusMax: 94 } },
+            { itemType: 'MCH', title: "Ср. сод. гемоглобина в эр.", abrreviature: 'MCH', units: "пгр", references: { FemMin: 26, FemMax: 32, MusMin: 26, MusMax: 32 } },
+            { itemType: 'MCHC', title: "Ср.конц-я гемоглобина в эр.", abrreviature: 'MCHC', units: "гр/л", references: { FemMin: 32.2, FemMax: 36.4, MusMin: 32.2, MusMax: 36.4 } },
+            { itemType: 'RDW-CV', title: "Отклонение р-ра эритроцита", abrreviature: 'RDW-CV', units: "%", references: { FemMin: 11.6, FemMax: 14.8, MusMin: 11.6, MusMax: 14.8 } },
+            { itemType: 'RDW-SD', title: "Разброс размеров  эр.", abrreviature: 'RDW-SD', units: "фЛ", references: { FemMin: 35.3, FemMax: 49.9, MusMin: 35.3, MusMax: 49.9 } },
+            { itemType: 'PLT', title: "Тромбоциты", abrreviature: 'PLT', units: "10^9/л", references: { FemMin: 180, FemMax: 320, MusMin: 180, MusMax: 320 } },
+            { itemType: 'MPV', title: "Ср. объем тромбоцита", abrreviature: 'MPV', units: "фЛ", references: { FemMin: 7.4, FemMax: 10.4, MusMin: 7.4, MusMax: 10.4 } },
+            { itemType: 'PDW', title: "Ширина распр-я тромбоцитов", abrreviature: 'PDW', units: "", references: { FemMin: 9.4, FemMax: 18.1, MusMin: 9.4, MusMax: 18.1 } },
+            { itemType: 'PCT', title: "Тромбокрит", abrreviature: 'PCT', units: "%", references: { FemMin: 0.15, FemMax: 0.4, MusMin: 0.15, MusMax: 0.4 } },
+            { itemType: 'RTC', title: "Ретикулоциты", abrreviature: 'RTC', units: "%", references: { FemMin: 0.2, FemMax: 1.2, MusMin: 0.2, MusMax: 1.2 } },
+            { itemType: 'EOS', title: "Эозинофилы", abrreviature: 'Э', units: "%", references: { FemMin: 0, FemMax: 5, MusMin: 0, MusMax: 5 } },
+            { itemType: 'PN', title: "Палочкоядерные нейтр.", abrreviature: 'П', units: "%", references: { FemMin: 1, FemMax: 6, MusMin: 1, MusMax: 6 } },
+            { itemType: 'SN', title: "Сегментоядерные нейтр.", abrreviature: 'С', units: "%", references: { FemMin: 47, FemMax: 72, MusMin: 47, MusMax: 72 } },
+            { itemType: 'lymph%', title: "Лимфациты (отн)", abrreviature: 'ЛФ', units: "%", references: { FemMin: 18, FemMax: 40, MusMin: 18, MusMax: 40 } },
+            { itemType: 'MON', title: "Моноциты", units: "%", abrreviature: 'М', references: { FemMin: 2, FemMax: 9, MusMin: 2, MusMax: 9 } },
+            { itemType: 'ELSp', title: "СОЭ", abrreviature: 'СОЭ', units: "сек", references: { FemMin: 2, FemMax: 15.0, MusMin: 1, MusMax: 10 } },
           ]
         },
         {
           title: 'Общий анализ мочи', small_title: 'ОАМ', srcList: [
-            { itemType: 'LEU', title: "Лейкоциты", units: "кл.в п/з", references: { FemMin: 0, FemMax: 6, MusMin: 0, MusMax: 3 } },
-            { itemType: 'KET', title: "Кетоны", units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
-            { itemType: 'URO', title: "Уробилиноген", units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
-            { itemType: 'BIL', title: "Билирубин", units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
-            { itemType: 'PRO', title: "Белок", units: "гр/л", references: { FemMin: 0, FemMax: 0.033, MusMin: 0, MusMax: 0.033 } },
-            { itemType: 'GLU', title: "Глюкоза", units: "ммоль/л", references: { FemMin: 0, FemMax: 0.8, MusMin: 0, MusMax: 0.8 } },
-            { itemType: 'SG', title: "Плотность", units: "", references: { FemMin: 1012, FemMax: 1022, MusMin: 1012, MusMax: 1022 } },
-            { itemType: 'BLD', title: "Эритроциты", units: "кл. в п/з", references: { FemMin: 0, FemMax: 3, MusMin: 0, MusMax: 3 } },
-            { itemType: 'pH', title: "Кислотность", units: "", references: { FemMin: 4, FemMax: 7, MusMin: 4, MusMax: 7 } },
-            { itemType: 'cells', title: "Эп. клетки", units: "кл.в п/з", references: { FemMin: 0, FemMax: 10, MusMin: 0, MusMax: 10 } },
+            { itemType: 'Col', title: "Цвет", abrreviature: 'Цв', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
+            { itemType: 'LEUnum', title: "Лейкоциты (кач)", abrreviature: 'Л', units: "кл.в п/з", references: { FemMin: 0, FemMax: 6, MusMin: 0, MusMax: 3 } },
+            { itemType: 'LEUlit', title: "Лейкоциты (кол)", abrreviature: 'Л', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 6, MusMin: 0, MusMax: 3 } },
+            { itemType: 'KET', title: "Кетоны", abrreviature: 'Кет', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
+            { itemType: 'URO', title: "Уробилиноген", abrreviature: 'Ур', units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
+            { itemType: 'BIL', title: "Билирубин", abrreviature: 'Бил', units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
+            { itemType: 'PROsum', title: "Белок (кач)", abrreviature: 'Прот', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0.033, MusMin: 0, MusMax: 0.033 } },
+            { itemType: 'PROval', title: "Белок (кол)", abrreviature: 'Прот', units: "гр/л", references: { FemMin: 0, FemMax: 0.033, MusMin: 0, MusMax: 0.033 } },
+            { itemType: 'GLU', title: "Глюкоза", abrreviature: 'Глю', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0.8, MusMin: 0, MusMax: 0.8 } },
+            { itemType: 'SG', title: "Плотность", abrreviature: 'SG', units: "", references: { FemMin: 1012, FemMax: 1022, MusMin: 1012, MusMax: 1022 } },
+            { itemType: 'BLDlit', title: "Эритроциты (кач)", abrreviature: 'Эр', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 3, MusMin: 0, MusMax: 3 } },
+            { itemType: 'BLDnum', title: "Эритроциты (кол)", abrreviature: 'Эр', units: "кл. в п/з", references: { FemMin: 0, FemMax: 3, MusMin: 0, MusMax: 3 } },
+            { itemType: 'pH', title: "Кислотность", abrreviature: 'pH', units: "", references: { FemMin: 4, FemMax: 7, MusMin: 4, MusMax: 7 } },
+            { itemType: 'cells', title: "Эп. клетки", abrreviature: 'Эп.кл.', units: "кл.в п/з", references: { FemMin: 0, FemMax: 10, MusMin: 0, MusMax: 10 } },
           ]
         },
         {
           title: 'Биохимический анализ крови', small_title: 'БхАК', srcList: [
-            { itemType: 'CBIL', title: "Общ. билирубин", units: "мкмоль/л", references: { FemMin: 8.5, FemMax: 20.5, MusMin: 8.5, MusMax: 20.5 } },
-            { itemType: 'RELBIL', title: "Прямой билирубин", units: "мкмоль/л", references: { FemMin: 2.2, FemMax: 5.1, MusMin: 2.2, MusMax: 5.1 } },
-            { itemType: 'NRELBIL', title: "Непрямой билирубин", units: "мкмоль/л", references: { FemMin: 0, FemMax: 17.1, MusMin: 0, MusMax: 17.1 } },
-            { itemType: 'ThymPro', title: "Тимоловая проба", units: "ед.", references: { FemMin: 0, FemMax: 5, MusMin: 0, MusMax: 5 } },
-            { itemType: 'CPRO', title: "Общ. белок", units: "гр/л", references: { FemMin: 65, FemMax: 85, MusMin: 65, MusMax: 85 } },
-            { itemType: 'ALB', title: "Альбумин", units: "гр/л", references: { FemMin: 35, FemMax: 50, MusMin: 35, MusMax: 50 } },
-            { itemType: 'AST', title: "АСТ", units: "ЕД/л", references: { FemMin: 5, FemMax: 40, MusMin: 5, MusMax: 40 } },
-            { itemType: 'ALT', title: "АЛТ", units: "ЕД/л", references: { FemMin: 5, FemMax: 40, MusMin: 5, MusMax: 40 } },
-            { itemType: 'GGT', title: "ГГТ", units: "ЕД/л", references: { FemMin: 0, FemMax: 32, MusMin: 0, MusMax: 50 } },
-            { itemType: 'ChelPhosph', title: "ЩФ", units: "ЕД/л", references: { FemMin: 64, FemMax: 306, MusMin: 80, MusMax: 306 } },
-            { itemType: 'LypCom', title: "Общ. ХС", units: "ммоль/л", references: { FemMin: 0, FemMax: 5.0, MusMin: 0, MusMax: 5.0 } },
-            // { itemType: 'BLypPro', title: "b-Липопротеиды",  units: "ед", references: { FemMin: 35, FemMax: 55, MusMin: 35, MusMax: 55 } },
-            { itemType: 'LypHigh', title: "ХС ЛПВП", units: "ммоль/л", references: { FemMin: 1.2, FemMax: 999, MusMin: 1, MusMax: 999 } },
-            { itemType: 'LypLow', title: "ХС ЛПНП", units: "ммоль/л", references: { FemMin: 0, FemMax: 1.4, MusMin: 0, MusMax: 1.4 } },
-            { itemType: 'LypTG', title: "ТГ", units: "ммоль/л", references: { FemMin: 0, FemMax: 1.7, MusMin: 0, MusMax: 1.7 } },
-            { itemType: 'URI', title: "Мочевина", units: "ммоль/л", references: { FemMin: 1.7, FemMax: 8.3, MusMin: 1.7, MusMax: 8.3 } },
-            { itemType: 'CREAT', title: "Креатинин", units: "ммоль/л", references: { FemMin: 53, FemMax: 97, MusMin: 61, MusMax: 115 } },
-            { itemType: 'CProt', title: "СРБ", units: "мг/л", references: { FemMin: 0, FemMax: 6.0, MusMin: 0, MusMax: 6.0 } },
-            { itemType: 'RevmFact', title: "РФ", units: "МЕ/мл", references: { FemMin: 0, FemMax: 8.0, MusMin: 0, MusMax: 8.0 } },
-            { itemType: 'URIAC', title: "Мочевая кислота", units: "ЕД/л", references: { FemMin: 140, FemMax: 320, MusMin: 200, MusMax: 420 } },
-            { itemType: 'AMYL', title: "Амилаза", units: "ЕД/л", references: { FemMin: 25, FemMax: 125, MusMin: 25, MusMax: 125 } },
-            { itemType: 'Ca', title: "Кальций", units: "ммольл", references: { FemMin: 2.02, FemMax: 2.55, MusMin: 2.02, MusMax: 2.55 } },
-            { itemType: 'PH', title: "Фосфор", units: "ммоль/л", references: { FemMin: 0.87, FemMax: 1.45, MusMin: 0.87, MusMax: 1.45 } },
-            { itemType: 'K', title: "Калий", units: "ммоль/л", references: { FemMin: 3.5, FemMax: 5.0, MusMin: 3.5, MusMax: 5.0 } },
-            { itemType: 'NA', title: "Натрий", units: "ммоль/л", references: { FemMin: 135, FemMax: 145, MusMin: 135, MusMax: 145 } },
-            { itemType: 'GLU', title: "Глюкоза", units: "ммоль/л", references: { FemMin: 0, FemMax: 6.1, MusMin: 0, MusMax: 6.1 } }
+            { itemType: 'CBIL', title: "Общ. билирубин", abrreviature: 'Общ.бил', units: "мкмоль/л", references: { FemMin: 8.5, FemMax: 20.5, MusMin: 8.5, MusMax: 20.5 } },
+            { itemType: 'RELBIL', title: "Прямой билирубин", abrreviature: 'Прям.бил', units: "мкмоль/л", references: { FemMin: 2.2, FemMax: 5.1, MusMin: 2.2, MusMax: 5.1 } },
+            { itemType: 'NRELBIL', title: "Непрямой билирубин", abrreviature: 'Непр.бил', units: "мкмоль/л", references: { FemMin: 0, FemMax: 17.1, MusMin: 0, MusMax: 17.1 } },
+            { itemType: 'ThymPro', title: "Тимоловая проба", abrreviature: 'Тим.пр.', units: "ед.", references: { FemMin: 0, FemMax: 5, MusMin: 0, MusMax: 5 } },
+            { itemType: 'CPRO', title: "Общ. белок", abrreviature: 'О.бел', units: "гр/л", references: { FemMin: 65, FemMax: 85, MusMin: 65, MusMax: 85 } },
+            { itemType: 'ALB', title: "Альбумин", abrreviature: 'Альб', units: "гр/л", references: { FemMin: 35, FemMax: 50, MusMin: 35, MusMax: 50 } },
+            { itemType: 'AST', title: "АСТ", abrreviature: 'АСТ', units: "ЕД/л", references: { FemMin: 5, FemMax: 40, MusMin: 5, MusMax: 40 } },
+            { itemType: 'ALT', title: "АЛТ", abrreviature: 'АЛТ', units: "ЕД/л", references: { FemMin: 5, FemMax: 40, MusMin: 5, MusMax: 40 } },
+            { itemType: 'GGT', title: "ГГТ", abrreviature: 'ГГТ', units: "ЕД/л", references: { FemMin: 0, FemMax: 32, MusMin: 0, MusMax: 50 } },
+            { itemType: 'ChelPhosph', title: "ЩФ", abrreviature: 'ЩФ', units: "ЕД/л", references: { FemMin: 64, FemMax: 306, MusMin: 80, MusMax: 306 } },
+            { itemType: 'LypCom', title: "Общий ХС", abrreviature: 'Общ.ХС', units: "ммоль/л", references: { FemMin: 0, FemMax: 5.0, MusMin: 0, MusMax: 5.0 } },
+            // { itemType: 'BLypPro', title: "b-Липопротеиды",abrreviature:'Л',  units: "ед", references: { FemMin: 35, FemMax: 55, MusMin: 35, MusMax: 55 } },
+            { itemType: 'LypHigh', title: "ХС ЛПВП", abrreviature: 'ХС ЛПВП', units: "ммоль/л", references: { FemMin: 1.2, FemMax: 999, MusMin: 1, MusMax: 999 } },
+            { itemType: 'LypLow', title: "ХС ЛПНП", abrreviature: 'ХС ЛПВП', units: "ммоль/л", references: { FemMin: 0, FemMax: 1.4, MusMin: 0, MusMax: 1.4 } },
+            { itemType: 'LypTG', title: "ТГ", abrreviature: 'ТГ', units: "ммоль/л", references: { FemMin: 0, FemMax: 1.7, MusMin: 0, MusMax: 1.7 } },
+            { itemType: 'URI', title: "Мочевина", abrreviature: 'Моч', units: "ммоль/л", references: { FemMin: 1.7, FemMax: 8.3, MusMin: 1.7, MusMax: 8.3 } },
+            { itemType: 'CREAT', title: "Креатинин", abrreviature: 'Креат', units: "ммоль/л", references: { FemMin: 53, FemMax: 97, MusMin: 61, MusMax: 115 } },
+            { itemType: 'CProt', title: "СРБ", abrreviature: 'СРБ', units: "мг/л", references: { FemMin: 0, FemMax: 6.0, MusMin: 0, MusMax: 6.0 } },
+            { itemType: 'RevmFact', title: "Ревматойидный фактор", abrreviature: 'РФ', units: "МЕ/мл", references: { FemMin: 0, FemMax: 8.0, MusMin: 0, MusMax: 8.0 } },
+            { itemType: 'URIAC', title: "Мочевая кислота", abrreviature: 'Моч.кисл', units: "ЕД/л", references: { FemMin: 140, FemMax: 320, MusMin: 200, MusMax: 420 } },
+            { itemType: 'AMYL', title: "Амилаза", abrreviature: 'Амил', units: "ЕД/л", references: { FemMin: 25, FemMax: 125, MusMin: 25, MusMax: 125 } },
+            { itemType: 'Ca', title: "Кальций", abrreviature: 'Ca', units: "ммольл", references: { FemMin: 2.02, FemMax: 2.55, MusMin: 2.02, MusMax: 2.55 } },
+            //{ itemType: 'PH', title: "Фосфор", abrreviature: 'Pf', units: "ммоль/л", references: { FemMin: 0.87, FemMax: 1.45, MusMin: 0.87, MusMax: 1.45 } },
+            { itemType: 'K', title: "Калий", abrreviature: 'K', units: "ммоль/л", references: { FemMin: 3.5, FemMax: 5.0, MusMin: 3.5, MusMax: 5.0 } },
+            { itemType: 'NA', title: "Натрий", abrreviature: 'Na', units: "ммоль/л", references: { FemMin: 135, FemMax: 145, MusMin: 135, MusMax: 145 } },
+            { itemType: 'GLU', title: "Глюкоза", abrreviature: 'Глюк', units: "ммоль/л", references: { FemMin: 0, FemMax: 6.1, MusMin: 0, MusMax: 6.1 } },
+            { itemType: 'PSA', title: "Простатспецифический антиген", abrreviature: 'ПСА', units: "нг/мл", references: { FemMin: 0, FemMax: 4.5, MusMin: 0, MusMax: 4.5 } }
           ]
         },
         {
           title: 'Коагулограмма', small_title: 'КОА', srcList: [
-            { itemType: 'PTI', title: "ПТИ", units: "сек", references: { FemMin: 13, FemMax: 18, MusMin: 13, MusMax: 18 } },
-            { itemType: 'Phybr', title: "Фибриноген", units: "гр/л", references: { FemMin: 1.8, FemMax: 4.0, MusMin: 1.8, MusMax: 4.0 } },
-            { itemType: 'Tbl', title: "Длительность кровотечения", units: "сек", references: { FemMin: 0, FemMax: 240, MusMin: 0, MusMax: 240 } },
-            { itemType: 'Tcon', title: "Время свертывания", units: "сек", references: { FemMin: 30, FemMax: 300, MusMin: 30, MusMax: 300 } },
-            { itemType: 'INV', title: "МНО", units: "", references: { FemMin: 0.85, FemMax: 1.15, MusMin: 0.85, MusMax: 1.15 } },
-            { itemType: 'ATPT', title: "АПТВ", units: "сек", references: { FemMin: 24, FemMax: 34, MusMin: 24, MusMax: 34 } },
+            { itemType: 'PTI', title: "Протромбиновый индекс", abrreviature: 'ПТИ', units: "%", references: { FemMin: 50, FemMax: 150, MusMin: 50, MusMax: 150 } },
+            { itemType: 'Phybr', title: "Фибриноген", abrreviature: 'Фибр', units: "гр/л", references: { FemMin: 1.8, FemMax: 4.0, MusMin: 1.8, MusMax: 4.0 } },
+            { itemType: 'Tbl', title: "Длительность кровотечения", abrreviature: 'Длит.кров', units: "сек", references: { FemMin: 0, FemMax: 240, MusMin: 0, MusMax: 240 } },
+            { itemType: 'Tcon', title: "Время свертывания", abrreviature: 'Вр.сверт', units: "сек", references: { FemMin: 30, FemMax: 300, MusMin: 30, MusMax: 300 } },
+            { itemType: 'INV', title: "Международное нормализованное отношение", abrreviature: 'МНО', units: "", references: { FemMin: 0.85, FemMax: 1.15, MusMin: 0.85, MusMax: 1.15 } },
+            { itemType: 'ATPT', title: "Активированное протромбиновое время", abrreviature: 'АПТВ', units: "сек", references: { FemMin: 24, FemMax: 34, MusMin: 24, MusMax: 34 } },
           ]
         },
         {
           title: 'Гормоны ЩЖ', small_title: 'ГрмЩЖ', srcList: [
-            { itemType: 'T3s', title: "Т3 св", units: "нмоль/л", references: { FemMin: 2.5, FemMax: 5.8, MusMin: 2.5, MusMax: 5.8 } },
-            { itemType: 'T4s', title: "Т4 св", units: "нмоль/л", references: { FemMin: 11.5, FemMax: 23, MusMin: 11.5, MusMax: 23 } },
-            { itemType: 'TTG', title: "ТТГ", units: "мМЕ/л", references: { FemMin: 0.17, FemMax: 4.7, MusMin: 0.17, MusMax: 4.7 } },
-            { itemType: 'ATPO', title: "Ат к ТПО", units: "", references: { FemMin: 0, FemMax: 50, MusMin: 0, MusMax: 50 } },
+            { itemType: 'T3s', title: "Т3 свободный", abrreviature: 'Т3 св', units: "нмоль/л", references: { FemMin: 2.5, FemMax: 5.8, MusMin: 2.5, MusMax: 5.8 } },
+            { itemType: 'T4s', title: "Т4 свободный", abrreviature: 'Т4 св', units: "нмоль/л", references: { FemMin: 11.5, FemMax: 23, MusMin: 11.5, MusMax: 23 } },
+            { itemType: 'TTG', title: "Тиреотропный гормон", abrreviature: 'ТТГ', units: "мМЕ/л", references: { FemMin: 0.17, FemMax: 4.7, MusMin: 0.17, MusMax: 4.7 } },
+            { itemType: 'ATPO', title: "Атитела к ТПО", abrreviature: 'Ат к ТПО', units: "", references: { FemMin: 0, FemMax: 50, MusMin: 0, MusMax: 50 } },
           ]
         },
       ],
@@ -169,8 +194,10 @@ export default {
 
           for (let j = 0; j < _analys.results.length; j++) {
             const labItem = _analys.results[j];
-            const _ref = this.GetReference(labItem.item);
-            let _finalString = `${labItem.item.title}: ${labItem.value} ${this.use_units ? labItem.item.units : ''} ${this.use_reference ? _ref : ''}`;
+            const _analysTitle = this.useAbbrev ? labItem.item.abrreviature : labItem.item.title;
+            const _analysUnits = (!labItem.item.hasOwnProperty('isLiteral') && this.use_units && !labItem.item.isLiteral) ? labItem.item.units : '';
+            const _analysRefs = (!labItem.item.hasOwnProperty('isLiteral') && this.use_reference && !labItem.item.isLiteral) ? this.GetReference(labItem.item) : '';
+            let _finalString = `${_analysTitle}: ${labItem.value} ${_analysUnits} ${_analysRefs}`;
             _labItemFinalstrings.push(_finalString.trim());
           }
           _resultStrings.push(_titleNdate + _labItemFinalstrings.join(_separator));

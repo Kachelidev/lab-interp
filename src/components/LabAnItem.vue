@@ -1,8 +1,9 @@
 <template>
     <tr :class="danger">
         <td>{{ labItem.title }}</td>
-        <td>{{ labItem.itemType }}</td>
-        <td><input type="number" @blur="ChangeColor" v-model.number="val" placeholder="..." @change="ReplaceCharacters">
+        <td>{{ labItem.abrreviature }}</td>
+        <td><input :type="(labItem.hasOwnProperty('isLiteral') && labItem.isLiteral == true) ? 'text' : 'number'"
+                @blur="ChangeColor" v-model.number="val" placeholder="..." @change="ReplaceCharacters">
         </td>
         <td>{{ labItem.units }}</td>
         <td class="reference">{{ mode === 'femini' ? labItem.references.FemMin : labItem.references.MusMin }}</td>
@@ -24,37 +25,49 @@ export default {
     },
     methods: {
         ChangeColor() {
-            let _value = Number(this.val);
-            // console.log(_value);
-            if (isNaN(_value) || this.val == '' || _value < 0) {
-                this.danger = '';
-                this.$emit('OnValueChanged', this.labItem, -1);
-            }
-            else {
-                if (_value >= 0.0) {
-                    let _min = 0.0;
-                    let _max = 0.0;
-
-                    if (this.mode === 'muscle') {
-                        _min = this.labItem.references.MusMin;
-                        _max = this.labItem.references.MusMax;
-                    }
-                    else if (this.mode === 'femini') {
-                        _min = this.labItem.references.FemMin;
-                        _max = this.labItem.references.FemMax;
-                    }
-
-                    if (_value >= _min && _value <= _max) {
-                        this.danger = 'table-success';
-                    }
-                    else {
-                        this.danger = 'table-danger';
-                    }
+            if (this.labItem.hasOwnProperty('isLiteral') && this.labItem.isLiteral == true) {
+                if (this.val == '') {
+                    this.danger = '';
+                    this.$emit('OnValueChanged', this.labItem, '');
                 }
                 else {
                     this.danger = 'table-warning';
+                    this.$emit('OnValueChanged', this.labItem, this.val);
                 }
-                this.$emit('OnValueChanged', this.labItem, this.val);
+            }
+            else {
+                let _value = Number(this.val);
+                // console.log(_value);
+                if (isNaN(_value) || this.val == '' || _value < 0) {
+                    this.danger = '';
+                    this.$emit('OnValueChanged', this.labItem, -1);
+                }
+                else {
+                    if (_value >= 0.0) {
+                        let _min = 0.0;
+                        let _max = 0.0;
+
+                        if (this.mode === 'muscle') {
+                            _min = this.labItem.references.MusMin;
+                            _max = this.labItem.references.MusMax;
+                        }
+                        else if (this.mode === 'femini') {
+                            _min = this.labItem.references.FemMin;
+                            _max = this.labItem.references.FemMax;
+                        }
+
+                        if (_value >= _min && _value <= _max) {
+                            this.danger = 'table-success';
+                        }
+                        else {
+                            this.danger = 'table-danger';
+                        }
+                    }
+                    else {
+                        this.danger = 'table-warning';
+                    }
+                    this.$emit('OnValueChanged', this.labItem, this.val);
+                }
             }
         },
         ReplaceCharacters() {

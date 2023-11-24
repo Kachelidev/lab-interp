@@ -64,33 +64,56 @@ export default {
         },
         ChangeResult(labItem, itemValue) {
             let _ResultArray = this.modelValue.results;
-
-            if (itemValue >= 0) {
-                let _itemID = _ResultArray.findIndex(x => x.item.itemType === labItem.itemType);
-                if (_itemID < 0) {
-                    let FinalObject = {};
-                    FinalObject.item = labItem;
-                    FinalObject.value = itemValue;
-                    _ResultArray.push(FinalObject);
-                    //console.log(`Added ${labItem.itemType} with value ${itemValue}`);
+            let _resultObject = {};
+            if (labItem.hasOwnProperty('isLiteral') && labItem.isLiteral == true) {
+                if (itemValue != '') {
+                    let _itemID = _ResultArray.findIndex(x => x.item.itemType === labItem.itemType);
+                    if (_itemID >= 0) {
+                        _ResultArray[_itemID].value = itemValue;
+                    }
+                    else {
+                        let FinalObject = {};
+                        FinalObject.item = labItem;
+                        FinalObject.value = itemValue;
+                        _ResultArray.push(FinalObject);
+                    }
                 }
                 else {
-                    _ResultArray[_itemID].value = itemValue;
-                    //console.log(`Changed ${this.CBAResult[_itemID].item.itemType} with value ${itemValue}`);
+                    let _itemID = _ResultArray.findIndex(x => x.item.itemType === labItem.itemType);
+                    if (_itemID >= 0) {
+                        _ResultArray.splice(_itemID, 1);
+                        //console.log(`Removed ${labItem.itemType}`);
+                    }
                 }
             }
             else {
-                let _itemID = _ResultArray.findIndex(x => x.item.itemType === labItem.itemType);
-                if (_itemID >= 0) {
-                    _ResultArray.splice(_itemID, 1);
-                    //console.log(`Removed ${labItem.itemType}`);
+                if (itemValue >= 0) {
+                    let _itemID = _ResultArray.findIndex(x => x.item.itemType === labItem.itemType);
+                    if (_itemID < 0) {
+                        let FinalObject = {};
+                        FinalObject.item = labItem;
+                        FinalObject.value = itemValue;
+                        _ResultArray.push(FinalObject);
+                        //console.log(`Added ${labItem.itemType} with value ${itemValue}`);
+                    }
+                    else {
+                        _ResultArray[_itemID].value = itemValue;
+                        //console.log(`Changed ${this.CBAResult[_itemID].item.itemType} with value ${itemValue}`);
+                    }
+                }
+                else {
+                    let _itemID = _ResultArray.findIndex(x => x.item.itemType === labItem.itemType);
+                    if (_itemID >= 0) {
+                        _ResultArray.splice(_itemID, 1);
+                        //console.log(`Removed ${labItem.itemType}`);
+                    }
                 }
             }
+
             _ResultArray.sort((a, b) => this.srcArray.indexOf(a.item) - this.srcArray.indexOf(b.item));
             // this.resultArray = _ResultArray;
-            let _resultObject = {
-                title: this.analysTitle, results: _ResultArray, date: this.dateToString(new Date(this.date))
-            }
+            _resultObject = { title: this.analysTitle, results: _ResultArray, date: this.dateToString(new Date(this.date)) };
+
             this.ResultItem = _resultObject;
             this.$emit('update:modelValue', _resultObject);
         }
