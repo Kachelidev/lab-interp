@@ -3,9 +3,9 @@
         <td>{{ labItem.title }}</td>
         <td>{{ labItem.abrreviature }}</td>
         <td><input :type="(labItem.hasOwnProperty('isLiteral') && labItem.isLiteral == true) ? 'text' : 'number'"
-                @blur="ChangeColor" v-model.number="val" placeholder="..." @change="ReplaceCharacters">
+                @blur="ChangeColor" v-model="val" placeholder="..." @change="ReplaceCharacters">
         </td>
-        <td>{{ labItem.units }}</td>
+        <td class="units">{{ labItem.units }}</td>
         <td class="reference">{{ mode === 'femini' ? labItem.references.FemMin : labItem.references.MusMin }}</td>
         <td class="reference">{{ mode === 'femini' ? labItem.references.FemMax : labItem.references.MusMax }}</td>
     </tr>
@@ -91,6 +91,11 @@ input {
 .table td {
     border: 1px solid #dddddd;
     padding: 5px;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+   opacity: 1;
 }
 
 .table tr td:first-child,

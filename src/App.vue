@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <div class="nav-item" v-for="(item, index) in navs" :key="index">
+    <div class="nav-item" :class="{ 'selected': index == selected }" v-for="(item, index) in navs" :key="index">
       <input type="radio" :id="index" :value="index" v-model="selected">
       <label :for="index">{{ index == 0 ? 'Все' : AnalysList[index - 1].small_title }}</label>
     </div>
@@ -96,11 +96,11 @@ export default {
         {
           title: 'Общий анализ мочи', small_title: 'ОАМ', srcList: [
             { itemType: 'Col', title: "Цвет", abrreviature: 'Цв', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
-            { itemType: 'LEUnum', title: "Лейкоциты (кач)", abrreviature: 'Л', units: "кл.в п/з", references: { FemMin: 0, FemMax: 6, MusMin: 0, MusMax: 3 } },
-            { itemType: 'LEUlit', title: "Лейкоциты (кол)", abrreviature: 'Л', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 6, MusMin: 0, MusMax: 3 } },
+            { itemType: 'LEUnum', title: "Лейкоциты (кач)", abrreviature: 'Л', isLiteral: true, units: "кл.в п/з", references: { FemMin: 0, FemMax: 6, MusMin: 0, MusMax: 3 } },
+            { itemType: 'LEUlit', title: "Лейкоциты (кол)", abrreviature: 'Л', units: "кл.в п/з", references: { FemMin: 0, FemMax: 6, MusMin: 0, MusMax: 3 } },
             { itemType: 'KET', title: "Кетоны", abrreviature: 'Кет', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
-            { itemType: 'URO', title: "Уробилиноген", abrreviature: 'Ур', units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
-            { itemType: 'BIL', title: "Билирубин", abrreviature: 'Бил', units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
+            { itemType: 'URO', title: "Уробилиноген", abrreviature: 'Ур', isLiteral: true, units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
+            { itemType: 'BIL', title: "Билирубин", abrreviature: 'Бил', isLiteral: true, units: "ммоль/л", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
             { itemType: 'PROsum', title: "Белок (кач)", abrreviature: 'Прот', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0.033, MusMin: 0, MusMax: 0.033 } },
             { itemType: 'PROval', title: "Белок (кол)", abrreviature: 'Прот', units: "гр/л", references: { FemMin: 0, FemMax: 0.033, MusMin: 0, MusMax: 0.033 } },
             { itemType: 'GLU', title: "Глюкоза", abrreviature: 'Глю', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0.8, MusMin: 0, MusMax: 0.8 } },
@@ -108,7 +108,7 @@ export default {
             { itemType: 'BLDlit', title: "Эритроциты (кач)", abrreviature: 'Эр', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 3, MusMin: 0, MusMax: 3 } },
             { itemType: 'BLDnum', title: "Эритроциты (кол)", abrreviature: 'Эр', units: "кл. в п/з", references: { FemMin: 0, FemMax: 3, MusMin: 0, MusMax: 3 } },
             { itemType: 'pH', title: "Кислотность", abrreviature: 'pH', units: "", references: { FemMin: 4, FemMax: 7, MusMin: 4, MusMax: 7 } },
-            { itemType: 'cells', title: "Эп. клетки", abrreviature: 'Эп.кл.', units: "кл.в п/з", references: { FemMin: 0, FemMax: 10, MusMin: 0, MusMax: 10 } },
+            { itemType: 'cells', title: "Эп. клетки", abrreviature: 'Эп.кл.', isLiteral: true, units: "кл.в п/з", references: { FemMin: 0, FemMax: 10, MusMin: 0, MusMax: 10 } },
           ]
         },
         {
@@ -237,22 +237,25 @@ export default {
 
 <style scoped>
 * {
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Sofia Sans Semi Condensed', sans-serif;
 }
 
 nav {
   position: fixed;
   width: 90px;
-  background: #d5e2ec;
+  background: #ffffff;
   left: 0;
   bottom: 0;
   top: 0;
-  box-shadow: 5px 0px 10px #666666;
+  /* box-shadow: 5px 0px 10px #666666; */
   padding-top: 25px;
+  margin: 5px;
+  border-radius: 5px;
 }
 
 .nav-item {
-  margin-left: 16px;
+  width: 100%;
+  padding-left: 16px;
 }
 
 .nav-item input[type=radio] {
@@ -265,17 +268,23 @@ nav {
   user-select: none;
 }
 
+.nav-item.selected {
+  border-left: 4px solid #427cae;
+  font-weight: bold;
+}
+
 .nav-item label:hover {
   color: #666666;
 }
 
-.nav-item input[type=radio]:checked+label {
-  text-decoration: underline #427cae 3px;
-}
+/* .nav-item input[type=radio]:checked+label {
+  text-decoration: underline #427cae 0px;
+} */
 
 .tables {
   width: 700px;
   margin-left: 100px;
+
 }
 
 th {
@@ -283,6 +292,7 @@ th {
 }
 
 .forms {
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -292,7 +302,9 @@ th {
   right: 10px;
   bottom: 0;
   top: 0;
-  box-shadow: -5px 0px 10px #666666;
+  margin: 5px;
+  border-radius: 5px;
+  /* box-shadow: -5px 0px 10px #666666; */
 }
 
 .controls {
@@ -343,6 +355,10 @@ th {
   width: 90%;
   text-wrap: wrap;
   min-height: 150px;
-  box-shadow: 2px 2px 6px inset #666;
+  border: rgb(65, 65, 65) 1px solid;
+  border-radius: 8px;
+  margin-top: 15px;
+  background: #f8f8f8;
+  /* box-shadow: 2px 2px 6px inset #666; */
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="analys-card">
         <h2>{{ analysTitle }}</h2>
         <div class="list-controls">
             <input type="date" v-model="date" />
@@ -132,6 +132,17 @@ export default {
 </script>
 
 <style scoped>
+.analys-card {
+    background: #fff;
+    border: rgb(65, 65, 65) 1px solid;
+    border-radius: 8px;
+    margin: 25px;
+}
+
+.analys-card h2 {
+    margin-left: 10px;
+}
+
 .list-controls {
     margin-bottom: 15px;
 }
@@ -139,6 +150,8 @@ export default {
 .list-controls input[type="date"],
 .list-controls select {
     font-size: 15px;
+    margin-left: 15px;
+    margin-top: 10px;
 }
 
 .list-controls select {
@@ -152,7 +165,7 @@ export default {
 }
 
 .table th {
-    font-weight: bold;
+    font-weight: 400;
     padding: 5px;
     background: #efefef;
     border: 1px solid #dddddd;
