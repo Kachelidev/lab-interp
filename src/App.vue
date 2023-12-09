@@ -1,9 +1,12 @@
 <template>
   <nav>
-    <div class="nav-item" :class="{ 'selected': index == selected }" v-for="(item, index) in navs" :key="index">
-      <input type="radio" :id="index" :value="index" v-model="selected">
-      <label :for="index">{{ index == 0 ? 'Все' : AnalysList[index - 1].small_title }}</label>
+    <div class="nav-items">
+      <div class="nav-item" :class="{ 'selected': index == selected }" v-for="(item, index) in navs" :key="index">
+        <input type="radio" :id="index" :value="index" v-model="selected">
+        <label :for="index">{{ index == 0 ? 'Все' : AnalysList[index - 1].small_title }}</label>
+      </div>
     </div>
+    <!-- <div class="question"></div> -->
   </nav>
   <div class="tables">
 
@@ -37,14 +40,18 @@
       </div>
     </div>
     <pre class="final">{{ finalText }}</pre>
+    <MassIndexComponent />
+    <ClierenceSpeedComponent :creatininValue="creatinin" v-if="creatinin >= 0" :gender="mode" />
   </div>
 </template>
 
 <script>
-import AnalysList from './components/AnalysList.vue';
+import AnalysList from '@/components/AnalysList.vue';
+import ClierenceSpeedComponent from '@/components/ClierenseSpeedComponent.vue';
+import MassIndexComponent from '@/components/MassIndexComponent.vue';
 
 export default {
-  components: { AnalysList },
+  components: { AnalysList, ClierenceSpeedComponent, MassIndexComponent },
   data() {
     return {
       useAbbrev: true,
@@ -108,6 +115,11 @@ export default {
             { itemType: 'BLDlit', title: "Эритроциты (кач)", abrreviature: 'Эр', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 3, MusMin: 0, MusMax: 3 } },
             { itemType: 'BLDnum', title: "Эритроциты (кол)", abrreviature: 'Эр', units: "кл. в п/з", references: { FemMin: 0, FemMax: 3, MusMin: 0, MusMax: 3 } },
             { itemType: 'pH', title: "Кислотность", abrreviature: 'pH', units: "", references: { FemMin: 4, FemMax: 7, MusMin: 4, MusMax: 7 } },
+            { itemType: 'Bak', title: "Бактерии", abrreviature: 'Бакт', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
+            { itemType: 'OXA', title: "Оксалаты", abrreviature: 'Оксал', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
+            { itemType: 'URA', title: "Ураты", abrreviature: 'Ур', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
+            { itemType: 'PHOS', title: "Фосфаты", abrreviature: 'Фосф', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
+            { itemType: 'SLIM', title: "Слизь", abrreviature: 'Слизь', isLiteral: true, units: "", references: { FemMin: 0, FemMax: 0, MusMin: 0, MusMax: 0 } },
             { itemType: 'cells', title: "Эп. клетки", abrreviature: 'Эп.кл.', isLiteral: true, units: "кл.в п/з", references: { FemMin: 0, FemMax: 10, MusMin: 0, MusMax: 10 } },
           ]
         },
@@ -124,22 +136,27 @@ export default {
             { itemType: 'GGT', title: "ГГТ", abrreviature: 'ГГТ', units: "ЕД/л", references: { FemMin: 0, FemMax: 32, MusMin: 0, MusMax: 50 } },
             { itemType: 'ChelPhosph', title: "ЩФ", abrreviature: 'ЩФ', units: "ЕД/л", references: { FemMin: 64, FemMax: 306, MusMin: 80, MusMax: 306 } },
             { itemType: 'LypCom', title: "Общий ХС", abrreviature: 'Общ.ХС', units: "ммоль/л", references: { FemMin: 0, FemMax: 5.0, MusMin: 0, MusMax: 5.0 } },
-            // { itemType: 'BLypPro', title: "b-Липопротеиды",abrreviature:'Л',  units: "ед", references: { FemMin: 35, FemMax: 55, MusMin: 35, MusMax: 55 } },
             { itemType: 'LypHigh', title: "ХС ЛПВП", abrreviature: 'ХС ЛПВП', units: "ммоль/л", references: { FemMin: 1.2, FemMax: 999, MusMin: 1, MusMax: 999 } },
             { itemType: 'LypLow', title: "ХС ЛПНП", abrreviature: 'ХС ЛПВП', units: "ммоль/л", references: { FemMin: 0, FemMax: 1.4, MusMin: 0, MusMax: 1.4 } },
             { itemType: 'LypTG', title: "ТГ", abrreviature: 'ТГ', units: "ммоль/л", references: { FemMin: 0, FemMax: 1.7, MusMin: 0, MusMax: 1.7 } },
             { itemType: 'URI', title: "Мочевина", abrreviature: 'Моч', units: "ммоль/л", references: { FemMin: 1.7, FemMax: 8.3, MusMin: 1.7, MusMax: 8.3 } },
-            { itemType: 'CREAT', title: "Креатинин", abrreviature: 'Креат', units: "ммоль/л", references: { FemMin: 53, FemMax: 97, MusMin: 61, MusMax: 115 } },
+            { itemType: 'CREAT', title: "Креатинин", abrreviature: 'Креат', units: "мкмоль/л", references: { FemMin: 53, FemMax: 97, MusMin: 61, MusMax: 115 } },
             { itemType: 'CProt', title: "СРБ", abrreviature: 'СРБ', units: "мг/л", references: { FemMin: 0, FemMax: 6.0, MusMin: 0, MusMax: 6.0 } },
             { itemType: 'RevmFact', title: "Ревматойидный фактор", abrreviature: 'РФ', units: "МЕ/мл", references: { FemMin: 0, FemMax: 8.0, MusMin: 0, MusMax: 8.0 } },
             { itemType: 'URIAC', title: "Мочевая кислота", abrreviature: 'Моч.кисл', units: "ЕД/л", references: { FemMin: 140, FemMax: 320, MusMin: 200, MusMax: 420 } },
             { itemType: 'AMYL', title: "Амилаза", abrreviature: 'Амил', units: "ЕД/л", references: { FemMin: 25, FemMax: 125, MusMin: 25, MusMax: 125 } },
             { itemType: 'Ca', title: "Кальций", abrreviature: 'Ca', units: "ммольл", references: { FemMin: 2.02, FemMax: 2.55, MusMin: 2.02, MusMax: 2.55 } },
-            //{ itemType: 'PH', title: "Фосфор", abrreviature: 'Pf', units: "ммоль/л", references: { FemMin: 0.87, FemMax: 1.45, MusMin: 0.87, MusMax: 1.45 } },
             { itemType: 'K', title: "Калий", abrreviature: 'K', units: "ммоль/л", references: { FemMin: 3.5, FemMax: 5.0, MusMin: 3.5, MusMax: 5.0 } },
             { itemType: 'NA', title: "Натрий", abrreviature: 'Na', units: "ммоль/л", references: { FemMin: 135, FemMax: 145, MusMin: 135, MusMax: 145 } },
             { itemType: 'GLU', title: "Глюкоза", abrreviature: 'Глюк', units: "ммоль/л", references: { FemMin: 0, FemMax: 6.1, MusMin: 0, MusMax: 6.1 } },
-            { itemType: 'PSA', title: "Простатспецифический антиген", abrreviature: 'ПСА', units: "нг/мл", references: { FemMin: 0, FemMax: 4.5, MusMin: 0, MusMax: 4.5 } }
+            { itemType: 'PSA', title: "Простатспецифический антиген", abrreviature: 'ПСА', units: "нг/мл", references: { FemMin: 0, FemMax: 4.5, MusMin: 0, MusMax: 4.5 } },
+            { itemType: 'Ferrit', title: "Ферритин", abrreviature: 'Феррит.', units: "мкг/л", references: { FemMin: 22, FemMax: 180, MusMin: 30, MusMax: 310 } },
+            { itemType: 'TransFerr', title: "Трансферрин", abrreviature: 'ТрансФер.', units: "г/л", references: { FemMin: 2, FemMax: 3.6, MusMin: 2, MusMax: 3.6 } },
+            { itemType: 'CFCA', title: "Общая железосвязывающая способность сыворотки", abrreviature: 'ОЖСС', units: "мкмоль/л", references: { FemMin: 44, FemMax: 72, MusMin: 44, MusMax: 72 } },
+            { itemType: 'SivFE', title: "Сывороточное железо", abrreviature: 'Сыв.Fe', units: "мкмоль/л", references: { FemMin: 5.83, FemMax: 34.5, MusMin: 5.83, MusMax: 34.5 } },
+            { itemType: '25OH', title: "Витамин D", abrreviature: '25(OH)D', units: "нмоль/л", references: { FemMin: 40, FemMax: 100, MusMin: 40, MusMax: 100 } },
+            { itemType: 'FolAcid', title: "Фолиевая кислота", abrreviature: 'Фол.кисл.', units: "нг/мл", references: { FemMin: 3.1, FemMax: 20.5, MusMin: 3.1, MusMax: 20.5 } },
+            { itemType: 'VitB12', title: "Витамин B12(цианокабалмин)", abrreviature: 'B12', units: "пг/мл", references: { FemMin: 191, FemMax: 663, MusMin: 191, MusMax: 663 } },
           ]
         },
         {
@@ -158,11 +175,12 @@ export default {
             { itemType: 'T4s', title: "Т4 свободный", abrreviature: 'Т4 св', units: "нмоль/л", references: { FemMin: 11.5, FemMax: 23, MusMin: 11.5, MusMax: 23 } },
             { itemType: 'TTG', title: "Тиреотропный гормон", abrreviature: 'ТТГ', units: "мМЕ/л", references: { FemMin: 0.17, FemMax: 4.7, MusMin: 0.17, MusMax: 4.7 } },
             { itemType: 'ATPO', title: "Атитела к ТПО", abrreviature: 'Ат к ТПО', units: "", references: { FemMin: 0, FemMax: 50, MusMin: 0, MusMax: 50 } },
+            { itemType: 'PARAT', title: "Паратгормон", abrreviature: 'Паратг.', units: "пг/мл", references: { FemMin: 4.7, FemMax: 117, MusMin: 4.7, MusMax: 117 } },
           ]
         },
       ],
       Results: [],
-      navs: [0]
+      navs: [0],
     }
   },
   methods: {
@@ -209,6 +227,7 @@ export default {
     CopyFinalText() {
       navigator.clipboard.writeText(this.finalText);
     },
+
     GetReference(item) {
       if (this.mode === 'muscle') {
         return `(${item.references.MusMin}-${item.references.MusMax})`;
@@ -222,6 +241,10 @@ export default {
   computed: {
     finalText() {
       return this.GenerateFinalText();
+    },
+    creatinin() {
+      const _ID = this.Results[3].results.findIndex(x => x.item.itemType == 'CREAT');
+      return _ID >= 0 ? this.Results[3].results[_ID].value : -1;
     }
   },
   created() {
@@ -247,10 +270,18 @@ nav {
   left: 0;
   bottom: 0;
   top: 0;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
   /* box-shadow: 5px 0px 10px #666666; */
   padding-top: 25px;
   margin: 5px;
   border-radius: 5px;
+}
+
+.nav-items {
+  width: 100%;
 }
 
 .nav-item {
@@ -280,6 +311,26 @@ nav {
 /* .nav-item input[type=radio]:checked+label {
   text-decoration: underline #427cae 0px;
 } */
+
+.question {
+  border: solid 2px #427cae;
+  border-radius: 100%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.question::before {
+  content: '?';
+  font-size: 32px;
+  color: #427cae;
+}
+
+.question:hover {
+  border: solid 4px #427cae;
+}
 
 .tables {
   width: 700px;
@@ -355,6 +406,9 @@ th {
   width: 90%;
   text-wrap: wrap;
   min-height: 150px;
+  max-height: 70%;
+  overflow: auto;
+  padding: 10px;
   border: rgb(65, 65, 65) 1px solid;
   border-radius: 8px;
   margin-top: 15px;
