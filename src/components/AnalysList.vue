@@ -1,7 +1,7 @@
 <template>
     <div class="analys-card">
-        <h2>{{ analysTitle }}</h2>
         <div class="list-controls">
+            <h2>{{ analysTitle }}</h2>
             <input type="date" v-model="date" />
             <select v-model="mode">
                 <option disabled value="">Пол</option>
@@ -38,6 +38,7 @@ export default {
             mode: 'muscle',
             ResultItem: {
                 title: '',
+                id: '',
                 results: [],
                 date: this.date
             }
@@ -112,7 +113,7 @@ export default {
 
             _ResultArray.sort((a, b) => this.srcArray.indexOf(a.item) - this.srcArray.indexOf(b.item));
             // this.resultArray = _ResultArray;
-            _resultObject = { title: this.analysTitle, results: _ResultArray, date: this.dateToString(new Date(this.date)) };
+            _resultObject = { title: this.analysTitle, id: this.modelValue.id, results: _ResultArray,  date: this.dateToString(new Date(this.date)) };
 
             this.ResultItem = _resultObject;
             this.$emit('update:modelValue', _resultObject);
@@ -131,55 +132,44 @@ export default {
 
 </script>
 
-<style scoped>
-.analys-card {
-    background: #fff;
-    border: rgb(65, 65, 65) 1px solid;
-    border-radius: 8px;
-    margin: 25px;
-}
+<style scoped lang="sass">
+@import '../assets/styles/style.sass'
+.analys-card 
+    background-color: rgba(255,255,255,0.3) 
+    @include border
+    margin: 25px
+    width: auto
+    box-shadow: 0 6px 14px black 
+    & .list-controls 
+        display: flex
+        flex-direction: row
+        justify-content: space-between
+        align-items: center
+        font-size: 24px
+        & h2
+            background-color: rgba(255,255,255,0.3)
+            padding-left: 15px
+            padding-right: 15px
+            padding-top: 10px
+        & select
+            margin-right: 10px
+        & input[type="date"], & select 
+            font-size: 15px
+            border: none
+    & .table 
+        width: 100%
+        // margin-bottom: 20px
+        border-collapse: collapse
+        & th 
+            font-weight: 400
+            padding: 10px 0
+            background: rgba(255,255,255,0.3)
+        & tr td:first-child,
+        & tr th:first-child 
+            border-left: none
+        & tr td:last-child,
+        & tr th:last-child 
+            border-right: none
+            border-bottom: none
 
-.analys-card h2 {
-    margin-left: 10px;
-}
-
-.list-controls {
-    margin-bottom: 15px;
-}
-
-.list-controls input[type="date"],
-.list-controls select {
-    font-size: 15px;
-    margin-left: 15px;
-    margin-top: 10px;
-}
-
-.list-controls select {
-    margin-left: 15px;
-}
-
-.table {
-    width: 100%;
-    margin-bottom: 20px;
-    border-collapse: collapse;
-}
-
-.table th {
-    font-weight: 400;
-    padding: 5px;
-    background: #efefef;
-    border: 1px solid #dddddd;
-}
-
-
-
-.table tr td:first-child,
-.table tr th:first-child {
-    border-left: none;
-}
-
-.table tr td:last-child,
-.table tr th:last-child {
-    border-right: none;
-}
 </style>

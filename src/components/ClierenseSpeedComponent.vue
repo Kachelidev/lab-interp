@@ -1,45 +1,50 @@
 <template>
     <div class="filtration-speed-container">
-        <label>Скорость клубочковой фильтрации</label>
-        <label>Креатинин - {{ creatininValue }}</label>
+        <label class="title">Скорость клубочковой фильтрации</label>
         <div class="controls-radio">
-            <label for="">Ед. измерения:</label>
+            <label>Креатинин - {{ creatininValue }}</label>
             <input type="radio" name="" id="one" value="mkmol" v-model="units">
             <label for="one">мкмоль/л</label>
             <input type="radio" name="" id="three" value="mg" v-model="units">
             <label for="three">мг/дл</label>
         </div>
-        <div class="controls-inputs">
-            <!-- <label for="height">Рост, см</label>
-            <input type="number" name="" id="height">
-            <label for="weight">Вес, кг</label>
-            <input type="number" name="" id="weight"> -->
-            <label for="age">Возраст, лет</label>
-            <input type="number" name="" id="age" v-model="age">
+        <CustomInput title="Возраст" v-model="age" />
+        <div class="result-container">
+            <pre class="result">{{ resultString }}</pre>
+            <CopyButon @onClicked="CopyClierenseSpeed" />
         </div>
-        <label class="result">{{ resultString }} </label>
     </div>
 </template>
 
 <script>
+import CopyButon from './CopyButon.vue';
+import CustomInput from './CustomInput.vue';
+
 export default {
     data() {
         return {
             units: 'mkmol',
             age: 0
+        };
+    },
+    methods: {
+        CopyClierenseSpeed() {
+            if (this.age >= 18 && this.creatininValue > 0) {
+                navigator.clipboard.writeText(this.resultString);
+            }
         }
     },
     props: {
         creatininValue: {
             type: Number,
-            default: -1
+            default: 0
         },
         gender: 'muscle'
     },
     computed: {
         creatininFinal() {
             switch (this.units) {
-                case 'mkmol': return Number(this.creatininValue) * 0.0113
+                case 'mkmol': return Number(this.creatininValue) * 0.0113;
                 case 'mg': return Number(this.creatininValue);
                 default:
                     break;
@@ -60,47 +65,70 @@ export default {
             return _result.toFixed(2);
         },
         resultString() {
-            if (this.age >= 18) return `СКФ = ${this.result} мл/мин/1.73м^2 (ХПН ${this.interpretation})`;
-            else if (this.age < 18 && this.age > 0) return 'СКФ расчитывается для людей старше 18 лет';
-            else if (this.age <= 0) return 'Возраст не верен';
+            if (this.age >= 18 && this.creatininValue > 0)
+                return `СКФ: ${this.result} мл/мин/1.73м^2\n(ХПН ${this.interpretation})`;
+            else if (this.age < 18 && this.age > 0)
+                return 'СКФ расчитывается для\nлюдей старше 18 лет';
+            else if (this.age <= 0)
+                return 'Возраст не верен';
+            else if (this.creatininValue <= 0)
+                return 'Креатинин должен\nбыть больше нуля';
         },
         interpretation() {
             let _interpResult = '0';
-            if (this.result >= 90) _interpResult = '1';
-            else if (this.result >= 60 && this.result < 90) _interpResult = '2'
-            else if (this.result >= 45 && this.result < 60) _interpResult = '3а'
-            else if (this.result >= 30 && this.result < 45) _interpResult = '3б'
-            else if (this.result >= 15 && this.result < 30) _interpResult = '4'
-            else if (this.result >= 0 && this.result < 15) _interpResult = '5'
-            return _interpResult
+            if (this.result >= 90)
+                _interpResult = '1';
+            else if (this.result >= 60 && this.result < 90)
+                _interpResult = '2';
+            else if (this.result >= 45 && this.result < 60)
+                _interpResult = '3а';
+            else if (this.result >= 30 && this.result < 45)
+                _interpResult = '3б';
+            else if (this.result >= 15 && this.result < 30)
+                _interpResult = '4';
+            else if (this.result >= 0 && this.result < 15)
+                _interpResult = '5';
+            return _interpResult;
         }
-    }
+    },
+    components: { CopyButon, CustomInput }
 }
 </script>
 
-<style scoped>
-.filtration-speed-container {
-    padding: 10px;
-    margin-top: 15px;
-    display: flex;
-    flex-direction: column;
-    width: 85%;
-    border: rgb(65, 65, 65) 1px solid;
-    border-radius: 8px;
-}
+<style scoped lang="sass">
+@import '../assets/styles/style.sass'
 
-.controls-inputs {
-    border-bottom: rgb(65, 65, 65) 1px solid;
-    padding-bottom: 5px;
-}
-
-.controls-inputs input {
-    width: 48px;
-    margin-left: 16px;
-    margin-right: 16px;
-}
-
-.result {
-    padding-top: 10px
-}
+.filtration-speed-container 
+    @include border 
+    min-width: 220px
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    align-items: stretch
+    background: #fff
+    .title
+        background: #25b7c4
+        text-align: center
+        font-size: 24px
+    .controls-radio 
+        padding-bottom: 5px
+        display: flex
+        flex-direction: row
+        gap: 5px
+        justify-content: space-around
+        align-items: center
+        & input 
+            display: none
+            &:checked + Label
+                border-bottom: 2px black solid
+    .result-container
+        display: flex
+        flex-direction: row
+        justify-content: space-between
+        align-items: center
+        gap: 5px
+        padding: 0px 5px
+        margin-bottom: 5px
+        .result
+            font-size: 16pxx
 </style>

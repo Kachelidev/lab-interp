@@ -1,9 +1,9 @@
 <template>
     <tr :class="danger">
         <td>{{ labItem.title }}</td>
-        <td>{{ labItem.abrreviature }}</td>
+        <td class="abbreviature">{{ labItem.abrreviature }}</td>
         <td><input :type="(labItem.hasOwnProperty('isLiteral') && labItem.isLiteral == true) ? 'text' : 'number'"
-                @blur="ChangeColor" v-model="val" placeholder="..." @change="ReplaceCharacters">
+                @blur="ChangeColor" v-model="val" placeholder="..." @change="ReplaceCharacters" :id="labItem.itemType">
         </td>
         <td class="units">{{ labItem.units }}</td>
         <td class="reference">{{ mode === 'femini' ? labItem.references.FemMin : labItem.references.MusMin }}</td>
@@ -83,45 +83,43 @@ export default {
 }
 </script>
 
-<style  scoped>
-input {
-    max-width: 100px;
-}
+<style  scoped lang="sass">
+@import '../assets/styles/style.sass'
 
-.table td {
-    border: 1px solid #dddddd;
-    padding: 5px;
-}
+input 
+    max-width: 100px
+
+
+.table td 
+    border: none
+    border-bottom: 1px solid $hover-color
+    padding: 10px 5px
+
+.abbreviature
+    text-align: right
 
 input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-   opacity: 1;
-}
+input[type=number]::-webkit-outer-spin-button 
+   opacity: 0
 
-.table tr td:first-child,
-.table tr th:first-child {
-    border-left: none;
-}
+input[type=number],input[type=text]
+   border: none
+   max-width: 70px
 
-.table tr td:last-child,
-.table tr th:last-child {
-    border-right: none;
-}
+.table tr td.reference 
+    width: auto
+    text-align: center
 
-.table tr td.reference {
-    width: auto;
-    text-align: center;
-}
 
-.table-success {
-    background: #5cad55;
-}
+.table-success 
+    background: $ok-color
 
-.table-warning {
-    background: #d4d033;
-}
 
-.table-danger {
-    background: #ec492f;
-}
+.table-warning 
+    background: $warning-color
+
+
+.table-danger 
+    background: $error-color
+
 </style>
